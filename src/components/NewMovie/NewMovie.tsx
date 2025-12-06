@@ -30,10 +30,12 @@ export const NewMovie: React.FC<Props> = ({ onAdd = () => {} }) => {
     return !value.trim();
   });
 
-  const validURlPattern =
+  const urlPatternString =
     '/^((([A-Za-z]{3,9}:(?://)?)(?:[-;:&=+$,w]+@)?[A-Za-z0-9.-]' +
     '+|(?:www.|[-;:&=+$,w]+@)[A-Za-z0-9.-]' +
     '+)((?:/[+~%/.w-_]*)???(?:[-+=&;%@,.w_]*)#?(?:[,.!/\\w]*))?)$/';
+  const validURlPattern = new RegExp(urlPatternString);
+
   function validate(values: typeof defaultFormValues): FormErrors {
     const formErrors: FormErrors = {};
 

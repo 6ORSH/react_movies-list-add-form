@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Movie } from '../../types/Movie';
 import { TextField } from '../TextField';
 
-const defaultFormValues = {
+const defaultFormValues: Movie = {
   title: '',
   description: '',
   imgUrl: '',
@@ -31,9 +31,9 @@ export const NewMovie: React.FC<Props> = ({ onAdd = () => {} }) => {
   });
 
   const urlPatternString =
-    '/^((([A-Za-z]{3,9}:(?://)?)(?:[-;:&=+$,w]+@)?[A-Za-z0-9.-]' +
+    '^((([A-Za-z]{3,9}:(?://)?)(?:[-;:&=+$,w]+@)?[A-Za-z0-9.-]' +
     '+|(?:www.|[-;:&=+$,w]+@)[A-Za-z0-9.-]' +
-    '+)((?:/[+~%/.w-_]*)???(?:[-+=&;%@,.w_]*)#?(?:[,.!/\\w]*))?)$/';
+    '+)((?:/[+~%/.w-_]*)???(?:[-+=&;%@,.w_]*)#?(?:[,.!/\\w]*))?)$';
   const validURlPattern = new RegExp(urlPatternString);
 
   function validate(values: typeof defaultFormValues): FormErrors {
@@ -75,8 +75,15 @@ export const NewMovie: React.FC<Props> = ({ onAdd = () => {} }) => {
 
     setMovie(defaultFormValues);
     // Clear the form
-    setCount(c => c + 1);
+    setCount(currentCount => currentCount + 1);
   }
+
+  const validateUrl = (
+    fieldName: string,
+    value: string,
+  ): string | undefined => {
+    return validURlPattern.test(value) ? undefined : fieldName + ' is invalid';
+  };
 
   return (
     <form className="NewMovie" key={count} onSubmit={handleSubmit} noValidate>
@@ -87,14 +94,14 @@ export const NewMovie: React.FC<Props> = ({ onAdd = () => {} }) => {
         label="Title"
         value={movie.title}
         required
-        onChange={val => handleChange('title', val)}
+        onChange={value => handleChange('title', value)}
       />
 
       <TextField
         name="description"
         label="Description"
         value={movie.description}
-        onChange={val => handleChange('description', val)}
+        onChange={value => handleChange('description', value)}
       />
 
       <TextField
@@ -102,10 +109,8 @@ export const NewMovie: React.FC<Props> = ({ onAdd = () => {} }) => {
         label="Image URL"
         value={movie.imgUrl}
         required
-        onChange={val => handleChange('imgUrl', val)}
-        validate={v =>
-          validURlPattern.test(v) ? undefined : 'Image URL is invalid'
-        }
+        onChange={value => handleChange('imgUrl', value)}
+        validate={value => validateUrl('Image URL', value)}
       />
 
       <TextField
@@ -113,10 +118,8 @@ export const NewMovie: React.FC<Props> = ({ onAdd = () => {} }) => {
         label="Imdb URL"
         value={movie.imdbUrl}
         required
-        onChange={val => handleChange('imdbUrl', val)}
-        validate={v =>
-          validURlPattern.test(v) ? undefined : 'Imdb URL is invalid'
-        }
+        onChange={value => handleChange('imdbUrl', value)}
+        validate={value => validateUrl('Imdb URL', value)}
       />
 
       <TextField
@@ -124,7 +127,7 @@ export const NewMovie: React.FC<Props> = ({ onAdd = () => {} }) => {
         label="Imdb ID"
         value={movie.imdbId}
         required
-        onChange={val => handleChange('imdbId', val)}
+        onChange={value => handleChange('imdbId', value)}
       />
 
       <div className="field is-grouped">
